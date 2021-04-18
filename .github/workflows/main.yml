@@ -1,14 +1,14 @@
-name: labels-actions
+name: issue-labeled-action
 on:
   issues:
     types:
-      ['labeled', 'unlabeled']
+      ['labeled']
 
 jobs:
   labeled-actions:
     runs-on: ubuntu-latest
     if: |
-      (github.event.label.name == '対応中') || (github.event.label.name == '依頼中')
+      (github.event.label.name == 'wontfix') || (github.event.label.name == 'bug')
     name: Recording label's add or remove time
     steps:
       - name: Setup timezone
@@ -19,8 +19,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Get current date-time
         id: date
-        run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
-      - name: POST Comment
+        run: echo "::set-output name=date::$(date +'%Y%m%d-%H%M')"
+      - name: Data post
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           URL: ${{ github.event.issue.url }}
